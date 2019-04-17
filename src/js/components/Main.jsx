@@ -1,7 +1,7 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Fragment, useState } from "react";
 import ReactDOM from "react-dom";
 
-import Input from './TestInput.jsx';
+import Input from './Input.jsx';
 
 import '../../css/main.sass';
 
