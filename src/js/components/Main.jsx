@@ -1,33 +1,24 @@
 import React, { Fragment, useState } from "react";
 import ReactDOM from "react-dom";
+import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
-import Input from './Input.jsx';
+import Nav from './Nav.jsx';
+import Home from './Home.jsx';
+import Content1 from './Content1.jsx';
+import Content2 from './Content2.jsx';
 
 import '../../css/main.sass';
 
-const Main = props => {
-	const [title, setTitle] = useState("");
-
-	function handleChange(event) {
-		setTitle(event.target.value);
-	}
-
-	return (
-		<Fragment>
-			<div>{title}</div>
-			<form id="article-form">
-				<Input
-					text="Title"
-					label="Title"
-					type="text"
-					id="title"
-					value={title}
-					handleChange={handleChange}
-				/>
-			</form>
-		</Fragment>
-	);
-};
+const Main = props => (
+	<Router>
+		<div>
+			<Nav />
+			<Route exact path="/" component={Home} />
+			<Route path="/Content1" component={Content1} />
+			<Route path="/Content2" component={Content2} />
+		</div>
+	</Router>
+);
 
 export default Main;
 
