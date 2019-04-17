@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Nav from './Nav.jsx';
 import Home from './Home.jsx';
