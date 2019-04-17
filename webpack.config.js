@@ -1,4 +1,4 @@
-//const webpack = require('webpack');
+const path = require('path');
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
 module.exports = (env, argv) => {
@@ -8,7 +8,7 @@ module.exports = (env, argv) => {
 		entry: "./src/js/app.js",
         devtool: argv.mode === "development" ? "inline-sourcemap" : false,
 		devServer: {
-			contentBase: __dirname,
+			contentBase: path.join(__dirname, '/Public'),
             compress: true,
 			hot: true,
             open: true,
