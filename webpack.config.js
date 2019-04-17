@@ -32,7 +32,7 @@ module.exports = (env, argv) => {
 					]
 				},
 				{
-					test: /\.scss$/,
+					test: /\.sass$/,
 					use: [{
 						loader: "style-loader"
 					}, {
