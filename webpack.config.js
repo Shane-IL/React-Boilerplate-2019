@@ -1,83 +1,100 @@
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const HtmlWebPackPlugin = require("html-webpack-plugin");
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = (env, argv) => {
-    return {
-        context: __dirname,
+	const isDevelopment = argv.mode !== 'production'
+	return {
 		mode: argv.mode,
-		entry: "./src/js/app.js",
-        devtool: argv.mode === "development" ? "inline-sourcemap" : false,
-		devServer: {
-			contentBase: path.join(__dirname, '/Public'),
-            compress: true,
-			hot: true,
-            open: true,
-			port: 5100
+
+		entry: './src/index.js',
+
+		output: {
+			filename: '[name].[chunkhash].js',
+			path: path.resolve(__dirname, 'dist')
 		},
-        module: {
-            rules: [
+
+		plugins: [
+			new webpack.ProgressPlugin(),
+			new HtmlWebpackPlugin(),
+			new MiniCssExtractPlugin({
+				filename: isDevelopment ? '[name].css' : '[name].[hash].css',
+				chunkFilename: isDevelopment ? '[id].css' : '[id].[hash].css'
+			})
+		],
+
+		module: {
+			rules: [
 				{
-					test: /\.jsx?$/,
-					exclude: /(node_modules|bower_components)/,
-					use: {
-						loader: "babel-loader"
+					test: /.(js|jsx)$/,
+					include: [path.resolve(__dirname, 'src')],
+					loader: 'babel-loader',
+
+					options: {
+						plugins: [
+							['@babel/plugin-syntax-dynamic-import'],
+							['@babel/plugin-proposal-class-properties'],
+							["@babel/plugin-transform-react-jsx"]
+						],
+
+						presets: [
+							[
+								'@babel/preset-env',
+								{
+									modules: false
+								}
+							]
+						]
 					}
 				},
 				{
-					test: /\.html$/,
-					use: [
+					test: /\.css$/i,
+					use: ['style-loader', 'css-loader'],
+				},
+				{
+					test: /\.module\.s(a|c)ss$/,
+					loader: [
+						isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
 						{
-							loader: "html-loader"
+							loader: 'css-loader',
+							options: {
+								modules: true,
+								sourceMap: isDevelopment
+							}
+						},
+						{
+							loader: 'sass-loader',
+							options: {
+								sourceMap: isDevelopment
+							}
 						}
 					]
 				},
 				{
-					test: /\.sass$/,
-					use: [{
-						loader: "style-loader"
-					}, {
-						loader: "css-loader"
-					}, {
-						loader: "sass-loader"
-					}]
-				},
-                {
-                    test: /\.css$/,
-                    use:[
-                        { loader: "style-loader" },
-                        { loader: "css-loader" }
-                    ]
-                },
-				{
-                	test: /\.(gif|png|jpe?g|svg)$/i,
-                	use: [
-                    	'file-loader',
-                    	{
-                        	loader: 'image-webpack-loader',
-                        	options: {
-                            optipng: {
-                                enabled: false,
-                            },
-                            pngquant: {
-                                quality: '65',
-                                speed: 4
-                            },
-                            bypassOnDebug: true,
-                        	},
-                    	},
-                	]
-            	}]
-        	},
-        output: {
-            path: __dirname,
-            filename: "Public/bundle.js"
-        },
-		plugins: [
-			new HtmlWebPackPlugin({
-				template: "./src/index.html",
-				filename: "./Public/index.html"
-			})
-		]
-
-    };
+					test: /\.s(a|c)ss$/,
+					exclude: /\.module.(s(a|c)ss)$/,
+					loader: [
+						isDevelopment ? 'style-loader' : MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'sass-loader',
+							options: {
+								sourceMap: isDevelopment
+							}
+						}
+					]
+				}
+			]
+		},
+		devtool: isDevelopment ? "inline-sourcemap" : false,
+		devServer: {
+			compress: true,
+			open: true,
+			port: 5000
+		},
+		resolve: {
+			extensions: ['.js', '.jsx', '.css', '.sass']
+		}
+	}
 };
