@@ -8,7 +8,7 @@ module.exports = (env, argv) => {
 	return {
 		mode: argv.mode,
 
-		entry: './src/index.js',
+		entry: './src/components/Main/index.jsx',
 
 		output: {
 			filename: '[name].[chunkhash].js',
